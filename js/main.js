@@ -1,193 +1,194 @@
-/* ===================================
---------------------------------------
-	Tulen | Photography HTML Template
-	Version: 1.0
---------------------------------------
-======================================*/
-
-
-'use strict';
-
-$(window).on('load', function() {
-	/*------------------
-		Preloder
-	--------------------*/
-	$(".loader").fadeOut();
-	$("#preloder").delay(400).fadeOut("slow");
-
-	/*------------------
-		Masonry
-	--------------------*/
-	var $container = $('.gallery-warp');
-		$container.imagesLoaded().progress( function() {
-			$container.isotope({
-				masonry: {
-					columnWidth: '.grid-sizer',
-  					itemSelector: '.gallery-item'
-				}
-			});
-		});
-
-	$('.gallery-filter li').on("click", function(){
-		$(".gallery-filter li").removeClass("active");
-		$(this).addClass("active");
-		var selector = $(this).attr('data-filter');
-		$container.imagesLoaded().progress( function() {
-			$container.isotope({
-				filter: selector,
-			});
-		});
-		return false;
-	});
-
-	var $blog_grid = $('.blog-grid-warp');
-
-	$blog_grid.imagesLoaded().progress( function() {
-		$blog_grid.isotope({
-			masonry: {
-				columnWidth: '.blog-grid-sizer',
-				itemSelector: '.blog-grid'
-			}
-		});
-	});
-
-});
+/* ===================================================================
+ * Count - Main JS
+ *
+ * ------------------------------------------------------------------- */
 
 (function($) {
-	/*------------------
-		Navigation
-	--------------------*/
-	$(".menu-switch").on('click', function () {
-		$('.side-menu-wrapper').addClass('active');
-		$('.menu-wrapper').addClass('hide-left');
-	});
 
-	$(".menu-close").on('click', function () {
-		$('.side-menu-wrapper').removeClass('active');
-		$('.menu-wrapper').removeClass('hide-left');
-	});
+    "use strict";
+    
+    var cfg = {
+        scrollDuration : 800, // smoothscroll duration
+        mailChimpURL   : 'https://facebook.us8.list-manage.com/subscribe/post?u=cdb7b577e41181934ed6a6a44&amp;id=e6957d85dc'   // mailchimp url
+    },
 
+    $WIN = $(window);
 
+    // Add the User Agent to the <html>
+    // will be used for IE10 detection (Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0))
+    var doc = document.documentElement;
+    doc.setAttribute('data-useragent', navigator.userAgent);
 
-	function hero() {
-
-		var window_w = $(window).innerWidth();
-		
-		if(window_w > 1300) {
-			var pana_w = 180;
-		} else if( window_w > 1200 ) {
-			var pana_w = 100;
-		} else {
-			var pana_w = 60;
-		}
-
-		var hero_w = $('.hero-section').innerWidth();
-		var pa_length = (($('.pana-accordion-item').length - 1) * pana_w);
-		var hero_iw = hero_w - pa_length;
-
-		var window_h = $(window).innerHeight();
-		$('.pana-accordion-item').each(function() {
-			$(this).height(window_h);
-		});
-		accordion.init({
-			id: 'accordion',
-			expandWidth: hero_iw,
-			itemWidth: pana_w,
-			autoPlay: false,
-			borderWidth: 0
-		});
-		
-	}
-	
-	hero();
-
-	$(window).resize(function(){
-		if($('.hero-section').length > 0) {
-			if($(window).innerWidth() > 767) {
-				location.reload();
-			}
-		}
-	});
-
-	if($(window).innerWidth() > 768) {
-
-		$(".nice-scroll").niceScroll({
-			cursorborder:"",
-			cursorcolor:"#ffffff",
-			boxzoom:false,
-			cursorwidth: 13,
-			autohidemode:false,
-			background: 'rgba(0, 0, 0, 0.3)',
-			cursorborderradius:50,
-			horizrailenabled: false
-		});
-
-		$(".about-section, .blog-details").niceScroll({
-			cursorborder:"1px solid rgba(120, 120, 120, 0.9)",
-			cursorcolor:"rgba(120, 120, 120, 0.9)",
-			boxzoom:false,
-			cursorwidth: 13,
-			autohidemode:false,
-			background: 'rgba(0, 0, 0, 0.1)',
-			cursorborderradius:50,
-		});
-
-	}
-	
-
-	/*------------------
-		Background Set
-	--------------------*/
-	$('.set-bg').each(function() {
-		var bg = $(this).data('setbg');
-		$(this).css('background-image', 'url(' + bg + ')');
-	});
+    // svg fallback
+    if (!Modernizr.svg) {
+        $(".home-logo img").attr("src", "images/logo.png");
+    }
 
 
-	/*------------------
-		Hero Slider
-	--------------------*/
-	$('.hero-slider').owlCarousel({
-		loop: true,
-		nav: false,
-		dots: false,
-		animateOut: 'fadeOut',
-		animateIn: 'fadeIn',
-		items: 1,
-		autoplay: true,
-		smartSpeed: 1000,
-	});
+   /* Preloader
+    * -------------------------------------------------- */
+    var ssPreloader = function() {
+        
+        $("html").addClass('ss-preload');
 
-	/*------------------
-		Circle progress
-	--------------------*/
-	$('.circle-progress').each(function() {
-		var cpvalue = $(this).data("cpvalue");
-		var cpcolor = $(this).data("cpcolor");
-		var cpid 	= $(this).data("cpid");
+        $WIN.on('load', function() {
 
-		$(this).append('<div class="'+ cpid +'"></div><div class="progress-info"><h2>'+ cpvalue +'%</h2></div>');
+            // will first fade out the loading animation 
+            $("#loader").fadeOut("slow", function() {
+                // will fade out the whole DIV that covers the website.
+                $("#preloader").delay(300).fadeOut("slow");
+            }); 
+            
+            // for hero content animations 
+            $("html").removeClass('ss-preload');
+            $("html").addClass('ss-loaded');
+        
+        });
+    };
 
-		if (cpvalue < 100) {
 
-			$('.' + cpid).circleProgress({
-				value: '0.' + cpvalue,
-				size: 100,
-				thickness: 5,
-				fill: cpcolor,
-				emptyFill: "#ebebeb"
-			});
-		} else {
-			$('.' + cpid).circleProgress({
-				value: 1,
-				size: 100,
-				thickness: 5,
-				fill: cpcolor,
-				emptyFill: "#ebebeb"
-			});
-		}
+   /* info toggle
+    * ------------------------------------------------------ */
+    var ssInfoToggle = function() {
 
-	});
+        //open/close lateral navigation
+        $('.info-toggle').on('click', function(event) {
+
+            event.preventDefault();
+            $('body').toggleClass('info-is-visible');
+
+        });
+
+    };
+
+
+   /* slick slider
+    * ------------------------------------------------------ */
+    var ssSlickSlider = function() {
+        
+        $('.home-slider').slick({
+            arrows: false,
+            dots: false,
+            autoplay: true,
+            autoplaySpeed: 3000,
+            fade: true,
+            speed: 3000
+        });
+
+    };
+
+
+   /* placeholder plugin settings
+    * ------------------------------------------------------ */
+    var ssPlaceholder = function() {
+        $('input, textarea, select').placeholder();
+    };
+
+
+   /* final countdown
+    * ------------------------------------------------------ */
+    var ssFinalCountdown = function() {
+
+        var finalDate =  new Date("August 10, 2021 15:37:25").getTime();
+        //-date: "Mar 25 2021",
+
+        $('.home-content__clock').countdown(finalDate)
+        .on('update.countdown finish.countdown', function(event) {
+
+            var str = '<div class=\"top\"><div class=\"time days\">' +
+                      '%D <span>day%!D</span>' + 
+                      '</div></div>' +
+                      '<div class=\"time hours\">' +
+                      '%H <span>H</span></div>' +
+                      '<div class=\"time minutes\">' +
+                      '%M <span>M</span></div>' +
+                      '<div class=\"time seconds\">' +
+                      '%S <span>S</span></div>';
+
+            $(this)
+            .html(event.strftime(str));
+
+        });
+    };
+
+
+   /* AjaxChimp
+    * ------------------------------------------------------ */
+    var ssAjaxChimp = function() {
+        
+        $('#mc-form').ajaxChimp({
+            language: 'es',
+            url: cfg.mailChimpURL
+        });
+
+        // Mailchimp translation
+        //
+        //  Defaults:
+        //	 'submit': 'Submitting...',
+        //  0: 'We have sent you a confirmation email',
+        //  1: 'Please enter a value',
+        //  2: 'An email address must contain a single @',
+        //  3: 'The domain portion of the email address is invalid (the portion after the @: )',
+        //  4: 'The username portion of the email address is invalid (the portion before the @: )',
+        //  5: 'This email address looks fake or invalid. Please enter a real email address'
+
+        $.ajaxChimp.translations.es = {
+            'submit': 'Submitting...',
+            0: '<i class="fas fa-check"></i> We have sent you a confirmation email',
+            1: '<i class="fas fa-exclamation-triangle"></i> You must enter a valid e-mail address.',
+            2: '<i class="fas fa-exclamation-triangle"></i> E-mail address is not valid.',
+            3: '<i class="fas fa-exclamation-triangle"></i> E-mail address is not valid.',
+            4: '<i class="fas fa-exclamation-triangle"></i> E-mail address is not valid.',
+            5: '<i class="fas fa-exclamation-triangle"></i> E-mail address is not valid.'
+        }
+    };
+
+
+   /* initialize
+    * ------------------------------------------------------ */
+    (function ssInit() {
+        
+        ssPreloader();
+        ssInfoToggle();
+        ssSlickSlider();
+        ssPlaceholder();
+        ssFinalCountdown();
+        ssAjaxChimp();
+
+    })();
+
+    $('.carousel').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        centerMode: true,
+        dots: true,
+        prevArrow: $('.fa-chevron-left'),
+        nextArrow: $('.fa-chevron-right'),
+              responsive: [
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                  }
+                },
+                {
+                  breakpoint: 600,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                  }
+                },
+                {
+                  breakpoint: 480,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                  }
+                }
+      
+              ]
+      })
+
 
 })(jQuery);
-
